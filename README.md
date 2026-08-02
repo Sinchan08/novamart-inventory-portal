@@ -1,35 +1,70 @@
-## Application Details
-|               |
-| ------------- |
-|**Generation Date and Time**<br>Fri Jul 31 2026 08:40:10 GMT+0000 (Coordinated Universal Time)|
-|**App Generator**<br>SAP Fiori Application Generator|
-|**App Generator Version**<br>1.29.0|
-|**Generation Platform**<br>SAP Business Application Studio|
-|**Template Used**<br>Basic|
-|**Service Type**<br>None|
-|**Service URL**<br>N/A|
-|**Module Name**<br>inventory-portal|
-|**Application Title**<br>Product Inventory Portal|
-|**Namespace**<br>novamart.inventory|
-|**UI5 Theme**<br>sap_horizon|
-|**UI5 Version**<br>1.150.1|
-|**Enable TypeScript**<br>False|
-|**Add Eslint configuration**<br>True, see https://www.npmjs.com/package/@sap-ux/eslint-plugin-fiori-tools#rules for the eslint rules.|
+# NovaMart Distributors - Inventory Portal
 
-## inventory-portal
+## Overview
+The NovaMart Inventory Portal is an enterprise SAPUI5 application built using the Flexible Column Layout (FCL) architecture. The application provides dynamic stock tracking, property binding, real-time stock updates, custom status formatting, and complete Master-Detail CRUD operations.
 
-NovaMart Distributors Inventory Management Portal
+## Features
+* Master-Detail navigation using `sap.f.FlexibleColumnLayout`.
+* Custom status formatting for stock levels (In Stock, Low Stock, Out of Stock).
+* Dynamic stock reordering with direct JSON model state updates.
+* Edit and Delete product dialog fragments with input validation.
+* Route error handling via dedicated `NotFound` view and fallback navigation.
+* Multi-language support using `i18n` property files.
 
-### Starting the generated app
+## Technical Architecture & Application Details
+* **App Generator**: SAP Fiori Application Generator
+* **Framework**: SAPUI5 (Version 1.150.1)
+* **Theme**: `sap_horizon`
+* **Namespace**: `novamart.inventory`
+* **Module Name**: `inventory-portal`
+* **Layout**: Flexible Column Layout (`FCL`)
+* **Data Handling**: `JSONModel` with custom product records (`products.json`)
 
--   This app has been generated using the SAP Fiori tools - App Generator, as part of the SAP Fiori tools suite.  To launch the generated application, run the following from the generated application root folder:
+## Project Structure
+```text
+inventory-portal/
+├── webapp/
+│   ├── controller/
+│   │   ├── App.controller.js
+│   │   ├── BaseController.js
+│   │   ├── List.controller.js
+│   │   ├── Detail.controller.js
+│   │   └── NotFound.controller.js
+│   ├── fragment/
+│   │   ├── AddEditProduct.fragment.xml
+│   │   └── ViewSettings.fragment.xml
+│   ├── model/
+│   │   ├── formatter.js
+│   │   ├── models.js
+│   │   └── products.json
+│   ├── view/
+│   │   ├── App.view.xml
+│   │   ├── List.view.xml
+│   │   ├── Detail.view.xml
+│   │   └── NotFound.view.xml
+│   ├── i18n/
+│   │   ├── i18n.properties
+│   │   └── i18n_de.properties
+│   ├── Component.js
+│   ├── manifest.json
+│   └── index.html
+├── .gitignore
+├── package.json
+└── README.md
 
-```
-    npm start
-```
+Setup and Execution Instructions
+Clone the repository:
 
-#### Pre-requisites:
+Bash
+git clone <YOUR_REMOTE_REPOSITORY_URL>
+cd inventory-portal
+Install dependencies:
 
-1. Active NodeJS LTS (Long Term Support) version and associated supported NPM version.  (See https://nodejs.org)
+Bash
+npm install
+Run the application locally:
 
-
+Bash
+npm start
+Access the application in the browser:
+http://localhost:8080/index.html
