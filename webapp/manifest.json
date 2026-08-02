@@ -1,0 +1,133 @@
+{
+  "_version": "1.86.0",
+  "sap.app": {
+    "id": "novamart.inventory.inventoryportal",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "dataSources": {
+      "productRemote": {
+        "uri": "model/products.json",
+        "type": "JSON"
+      }
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.29.0",
+      "toolsId": "94b52507-6efe-4538-afc1-d452f1ed6c8f"
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.150.1",
+      "libs": {
+        "sap.m": {},
+        "sap.f": {},
+        "sap.ui.core": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "rootView": {
+      "viewName": "novamart.inventory.inventoryportal.view.App",
+      "type": "XML",
+      "id": "App",
+      "async": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "novamart.inventory.inventoryportal.i18n.i18n"
+        }
+      },
+      "products": {
+        "type": "sap.ui.model.json.JSONModel",
+        "dataSource": "productRemote"
+      }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "async": true,
+        "viewPath": "novamart.inventory.inventoryportal.view",
+        "controlId": "fcl",
+        "transition": "slide"
+      },
+      "routes": [
+        {
+          "name": "master",
+          "pattern": "",
+          "target": [
+            "master"
+          ]
+        },
+        {
+          "name": "detail",
+          "pattern": "product/{productId}",
+          "target": [
+            "master",
+            "detail"
+          ]
+        },
+        {
+          "name": "notFound",
+          "pattern": ":all*:",
+          "target": [
+            "master",
+            "notFound"
+          ]
+        }
+      ],
+      "targets": {
+        "master": {
+          "viewName": "List",
+          "viewLevel": 1,
+          "controlAggregation": "beginColumnPages"
+        },
+        "detail": {
+          "viewName": "Detail",
+          "viewLevel": 2,
+          "controlAggregation": "midColumnPages"
+        },
+        "notFound": {
+          "viewName": "NotFound",
+          "viewLevel": 3,
+          "controlAggregation": "midColumnPages"
+        }
+      }
+    }
+  }
+}

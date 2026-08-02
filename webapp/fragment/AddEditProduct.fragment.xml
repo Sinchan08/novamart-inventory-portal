@@ -1,0 +1,89 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.ui.layout.form">
+    <Dialog
+        id="dlgAddEditProduct"
+        title="{dialog>/title}">
+        <content>
+            <f:SimpleForm
+                id="sfAddEdit"
+                editable="true"
+                layout="ColumnLayout">
+                <f:content>
+                    <Label id="lblEditName" text="Product Name" required="true"/>
+                    <Input
+                        id="inpEditName"
+                        value="{dialog>/product/name}"
+                        valueLiveUpdate="true"
+                        liveChange=".onInputChange"/>
+
+                    <Label id="lblEditCategory" text="Category" required="true"/>
+                    <Input
+                        id="inpEditCategory"
+                        value="{dialog>/product/category}"
+                        valueLiveUpdate="true"
+                        liveChange=".onInputChange"/>
+
+                    <Label id="lblEditSKU" text="SKU" required="true"/>
+                    <Input
+                        id="inpEditSKU"
+                        value="{dialog>/product/sku}"
+                        valueLiveUpdate="true"
+                        liveChange=".onInputChange"/>
+
+                    <Label id="lblEditPrice" text="Price ($)" required="true"/>
+                    <Input
+                        id="inpEditPrice"
+                        type="Number"
+                        value="{dialog>/product/price}"
+                        valueLiveUpdate="true"
+                        liveChange=".onInputChange"/>
+
+                    <Label id="lblEditStock" text="Stock Quantity" required="true"/>
+                    <Input
+                        id="inpEditStock"
+                        type="Number"
+                        value="{dialog>/product/stock}"
+                        valueLiveUpdate="true"
+                        liveChange=".onInputChange"/>
+
+                    <Label id="lblEditThreshold" text="Reorder Threshold"/>
+                    <Input
+                        id="inpEditThreshold"
+                        type="Number"
+                        value="{dialog>/product/reorderThreshold}"/>
+
+                    <Label id="lblEditSupplier" text="Supplier"/>
+                    <Input
+                        id="inpEditSupplier"
+                        value="{dialog>/product/supplier}"/>
+
+                    <Label id="lblEditWarehouse" text="Warehouse Location"/>
+                    <Input
+                        id="inpEditWarehouse"
+                        value="{dialog>/product/warehouse}"/>
+
+                    <Label id="lblEditDescription" text="Description"/>
+                    <TextArea
+                        id="taEditDescription"
+                        rows="3"
+                        value="{dialog>/product/description}"/>
+                </f:content>
+            </f:SimpleForm>
+        </content>
+        <beginButton>
+            <Button
+                id="btnSaveProduct"
+                text="Save"
+                type="Emphasized"
+                press=".onSaveProductDialog"/>
+        </beginButton>
+        <endButton>
+            <Button
+                id="btnCancelProduct"
+                text="Cancel"
+                press=".onCancelProductDialog"/>
+        </endButton>
+    </Dialog>
+</core:FragmentDefinition>

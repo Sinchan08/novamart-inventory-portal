@@ -1,0 +1,98 @@
+<mvc:View
+    controllerName="novamart.inventory.inventoryportal.controller.List"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+
+    <Page
+        id="listPage"
+        title="NovaMart Distributors | Inventory Portal"
+        showNavButton="false">
+        
+        <content>
+            <Table
+                id="productList"
+                items="{
+                    path: 'products>/products'
+                }"
+                noDataText="{i18n>noDataText}"
+                mode="SingleSelectMaster"
+                selectionChange=".onProductSelect"
+                growing="true"
+                growingThreshold="15">
+                
+                <headerToolbar>
+                    <OverflowToolbar id="tbListHeader">
+                        <Title id="txtListTitle" text="Products ({products>/products/length})" level="H2"/>
+                        <ToolbarSpacer id="spcHeader"/>
+                        <SearchField
+                            id="searchField"
+                            width="40%"
+                            placeholder="{i18n>searchPlaceholder}"
+                            liveChange=".onSearch"/>
+                        <Button
+                            id="btnViewSettings"
+                            icon="sap-icon://filter"
+                            tooltip="Sort / Filter / Group"
+                            press=".onOpenViewSettings"/>
+                        <Button
+                            id="btnAddProduct"
+                            icon="sap-icon://add"
+                            type="Emphasized"
+                            text="Add Product"
+                            press=".onAddProduct"/>
+                    </OverflowToolbar>
+                </headerToolbar>
+
+                <columns>
+                    <Column id="colProduct">
+                        <Text id="lblColProduct" text="Product Name" />
+                    </Column>
+                    <Column id="colCategory" minScreenWidth="Tablet" demandPopin="true">
+                        <Text id="lblColCategory" text="Category" />
+                    </Column>
+                    <Column id="colPrice" hAlign="End">
+                        <Text id="lblColPrice" text="Price" />
+                    </Column>
+                    <Column id="colStatus" hAlign="End">
+                        <Text id="lblColStatus" text="Stock Status" />
+                    </Column>
+                </columns>
+
+                <items>
+                    <ColumnListItem
+                        id="cliProduct"
+                        type="Navigation"
+                        press=".onProductPress">
+                        <cells>
+                            <ObjectIdentifier
+                                id="oiProductName"
+                                title="{products>name}"
+                                text="SKU: {products>sku}" />
+                            <Text id="txtCategory" text="{products>category}" />
+                            <ObjectNumber
+                                id="numPrice"
+                                number="{
+                                    parts: [
+                                        {path: 'products>price'},
+                                        {path: 'products>currency'}
+                                    ],
+                                    formatter: '.formatter.formatCurrency'
+                                }"/>
+                            <ObjectStatus
+                                id="osListStockStatus"
+                                text="{
+                                    path: 'products>stock',
+                                    formatter: '.formatter.formatStockStatusText'
+                                }"
+                                state="{
+                                    path: 'products>stock',
+                                    formatter: '.formatter.formatStockStatusState'
+                                }"/>
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
+    </Page>
+</mvc:View>

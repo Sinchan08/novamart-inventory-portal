@@ -1,0 +1,29 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+    <ViewSettingsDialog
+        id="vsdProducts"
+        confirm=".onConfirmViewSettings">
+        
+        <sortItems>
+            <ViewSettingsItem id="vsiSortName" text="Product Name" key="name" selected="true"/>
+            <ViewSettingsItem id="vsiSortPrice" text="Price" key="price"/>
+            <ViewSettingsItem id="vsiSortStock" text="Stock Quantity" key="stock"/>
+        </sortItems>
+
+        <groupItems>
+            <ViewSettingsItem id="vsiGroupCategory" text="Category" key="category"/>
+        </groupItems>
+
+        <filterItems>
+            <ViewSettingsFilterItem id="vsfiCategory" text="Category" key="category">
+                <items>
+                    <ViewSettingsItem id="vsiCatHardware" text="Hardware" key="Hardware"/>
+                    <ViewSettingsItem id="vsiCatMachinery" text="Machinery" key="Machinery"/>
+                    <ViewSettingsItem id="vsiCatElectronics" text="Electronics" key="Electronics"/>
+                    <ViewSettingsItem id="vsiCatSafety" text="Safety Gear" key="Safety Gear"/>
+                </items>
+            </ViewSettingsFilterItem>
+        </filterItems>
+    </ViewSettingsDialog>
+</core:FragmentDefinition>

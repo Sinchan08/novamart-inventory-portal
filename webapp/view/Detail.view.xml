@@ -1,0 +1,110 @@
+<mvc:View
+    controllerName="novamart.inventory.inventoryportal.controller.Detail"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:form="sap.ui.layout.form">
+
+    <f:DynamicPage
+        id="detailPage"
+        showFooter="true">
+
+        <!-- Title / Header Bar -->
+        <f:title>
+            <f:DynamicPageTitle id="detailPageTitle">
+                <f:heading>
+                    <Title id="detailProductTitle" text="{products>name}" />
+                </f:heading>
+                
+                <!-- TOP RIGHT: Close (X) Button -->
+                <f:navigationActions>
+                    <Button
+                        id="btnCloseDetail"
+                        icon="sap-icon://decline"
+                        type="Transparent"
+                        tooltip="Close detail view"
+                        press=".onCloseDetailPress" />
+                </f:navigationActions>
+            </f:DynamicPageTitle>
+        </f:title>
+
+        <f:header>
+            <f:DynamicPageHeader id="detailPageHeader">
+                <ObjectHeader
+                    id="detailObjectHeader"
+                    title="{products>name}"
+                    number="{products>price}"
+                    numberUnit="{products>currency}"
+                    intro="SKU: {products>sku}">
+                    <statuses>
+                        <ObjectStatus
+    id="detailStockStatus"
+    text="{
+        path: 'products>stock',
+        formatter: '.formatter.formatStockStatusText'
+    }"
+    state="{
+        path: 'products>stock',
+        formatter: '.formatter.formatStockStatusState'
+    }" />
+                    </statuses>
+                    <attributes>
+                        <ObjectAttribute id="attrCategory" text="Category: {products>category}" />
+                        <ObjectAttribute id="attrWarehouse" text="Warehouse: {products>warehouse}" />
+                        <ObjectAttribute id="attrSupplier" text="Supplier: {products>supplier}" />
+                    </attributes>
+                </ObjectHeader>
+            </f:DynamicPageHeader>
+        </f:header>
+
+        <!-- Main Content Area -->
+        <f:content>
+            <VBox id="detailContentVBox" class="sapUiSmallMargin">
+                <Panel id="detailSpecsPanel" headerText="Product Specifications &amp; Inventory Level">
+                    <form:SimpleForm
+                        id="detailSpecsForm"
+                        editable="false"
+                        layout="ColumnLayout">
+                        <Label id="lblDescription" text="Description:" />
+                        <Text id="txtDescription" text="{products>description}" />
+
+                        <Label id="lblStockQuantity" text="Current Stock Level:" />
+                        <Text id="txtStockQuantity" text="{products>stock} units" />
+
+                        <Label id="lblReorderThreshold" text="Reorder Threshold:" />
+                        <Text id="txtReorderThreshold" text="{products>reorderThreshold} units" />
+
+                        <Label id="lblLastUpdated" text="Last Updated:" />
+                        <Text id="txtLastUpdated" text="{products>lastUpdated}" />
+                    </form:SimpleForm>
+                </Panel>
+            </VBox>
+        </f:content>
+
+        <!-- BOTTOM FOOTER BAR -->
+        <f:footer>
+            <OverflowToolbar id="detailFooterToolbar">
+                <Button
+                    id="btnReorderStock"
+                    text="Reorder Stock"
+                    icon="sap-icon://cart-plus"
+                    type="Emphasized"
+                    press=".onReorderPress" />
+                <ToolbarSpacer id="detailFooterSpacer" />
+                <Button
+                    id="btnEditProduct"
+                    text="Edit"
+                    icon="sap-icon://edit"
+                    type="Transparent"
+                    press=".onEditPress" />
+                <Button
+                    id="btnDeleteProduct"
+                    text="Delete"
+                    icon="sap-icon://delete"
+                    type="Reject"
+                    press=".onDeletePress" />
+            </OverflowToolbar>
+        </f:footer>
+
+    </f:DynamicPage>
+</mvc:View>
