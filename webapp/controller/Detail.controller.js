@@ -3,8 +3,9 @@ sap.ui.define([
     "novamart/inventory/inventoryportal/model/formatter",
     "sap/ui/core/Fragment",
     "sap/m/MessageToast",
+    "sap/ui/model/json/JSONModel",
     "sap/m/MessageBox"
-], function (BaseController, formatter, Fragment, MessageToast, MessageBox) {
+], function (BaseController, formatter, Fragment, MessageToast, JSONModel, MessageBox) {
     "use strict";
 
     return BaseController.extend("novamart.inventory.inventoryportal.controller.Detail", {
@@ -20,19 +21,23 @@ sap.ui.define([
             var sProductId = oEvent.getParameter("arguments").productId;
             var oModel = this.getOwnerComponent().getModel("products");
 
-            var fnBind = function () {
-                if (!oModel) {
+            if (!oModel) {
+                return;
+            }
+
+            var fnEvaluateAndBind = function () {
+                var aProducts = oModel.getProperty("/products");
+
+                if (!aProducts || !Array.isArray(aProducts) || aProducts.length === 0) {
                     return;
                 }
 
-                var aProducts = oModel.getProperty("/products") || [];
                 var iIndex = aProducts.findIndex(function (p) {
                     return String(p.productId || p.ProductId || p.id) === String(sProductId);
                 });
 
-                var oUIModel = this.getOwnerComponent().getModel("ui");
-
                 if (iIndex !== -1) {
+                    var oUIModel = this.getOwnerComponent().getModel("ui");
                     if (oUIModel) {
                         oUIModel.setProperty("/layout", "TwoColumnsMidExpanded");
                     }
@@ -41,29 +46,26 @@ sap.ui.define([
                         model: "products"
                     });
                 } else {
-                    // Unbind previous context to clear Detail.view
                     this.getView().unbindElement("products");
                     this.getView().unbindElement();
-
-                    if (oUIModel) {
-                        oUIModel.setProperty("/layout", "TwoColumnsMidExpanded");
-                    }
-
-                    // Display NotFound target in midColumnPages
-                    this.getRouter().getTargets().display("notFound");
+                    this.getRouter().navTo("notFound", {}, true);
                 }
             }.bind(this);
 
-            if (oModel && oModel.getProperty("/products")) {
-                fnBind();
-            } else if (oModel) {
-                oModel.attachRequestCompleted(fnBind, this);
+            var aProducts = oModel.getProperty("/products");
+            if (aProducts && Array.isArray(aProducts) && aProducts.length > 0) {
+                fnEvaluateAndBind();
+            } else {
+                oModel.attachRequestCompleted(function fnHandler() {
+                    oModel.detachRequestCompleted(fnHandler, this);
+                    fnEvaluateAndBind();
+                }, this);
             }
         },
-        // Handler mapped to XML: press=".onEditPress"
+
         onEditPress: function () {
             var oView = this.getView();
-            var oContext = oView.getBindingContext() || oView.getBindingContext("products");
+            var oContext = oView.getBindingContext("products") || oView.getBindingContext();
 
             if (!oContext) {
                 return;
@@ -72,12 +74,11 @@ sap.ui.define([
             var oCurrentData = Object.assign({}, oContext.getObject());
 
             if (!this._oEditDialogModel) {
-                var JSONModel = sap.ui.require("sap/ui/model/json/JSONModel");
                 this._oEditDialogModel = new JSONModel();
             }
 
             this._oEditDialogModel.setData({
-                title: "Edit Product: " + (oCurrentData.Name || oCurrentData.name),
+                title: "Edit Product: " + (oCurrentData.name || oCurrentData.Name || "Product"),
                 isEdit: true,
                 product: oCurrentData
             });
@@ -99,9 +100,7 @@ sap.ui.define([
             }.bind(this));
         },
 
-        // Handler for Reorder Stock Button
         onReorderPress: function () {
-            // Get the explicit 'products' model binding context
             var oContext = this.getView().getBindingContext("products") || this.getView().getBindingContext();
             if (!oContext) {
                 MessageToast.show("No item context found.");
@@ -111,33 +110,27 @@ sap.ui.define([
             var oProductsModel = oContext.getModel();
             var sPath = oContext.getPath();
 
-            // Fetch product properties matching your JSON keys (lowercase)
             var sProductName = oContext.getProperty("name") || "Product";
             var iCurrentStock = parseInt(oContext.getProperty("stock"), 10) || 0;
 
-            // Simulate stock reorder by adding 10 units
             var iReorderAmount = 10;
             var iNewStock = iCurrentStock + iReorderAmount;
 
-            // 1. Update the stock property in the model
             oProductsModel.setProperty(sPath + "/stock", iNewStock);
 
-            // 2. Update the lastUpdated property to current date
             var sToday = new Date().toISOString().split("T")[0];
             oProductsModel.setProperty(sPath + "/lastUpdated", sToday);
 
-            // 3. Provide immediate visual feedback to the user
             MessageToast.show("Reorder placed! Added " + iReorderAmount + " units to " + sProductName + ". New Stock: " + iNewStock);
         },
 
-        // Handler for Delete Product Button
         onDeletePress: function () {
-            var oContext = this.getView().getBindingContext() || this.getView().getBindingContext("products");
+            var oContext = this.getView().getBindingContext("products") || this.getView().getBindingContext();
             if (!oContext) {
                 return;
             }
 
-            var sProductName = oContext.getProperty("Name") || "Product";
+            var sProductName = oContext.getProperty("name") || "Product";
             var sPath = oContext.getPath();
             var iIndex = parseInt(sPath.split("/").pop(), 10);
 
@@ -147,9 +140,9 @@ sap.ui.define([
                 emphasizedAction: MessageBox.Action.DELETE,
                 onClose: function (oAction) {
                     if (oAction === MessageBox.Action.DELETE) {
-                        var oModel = this.getModel("products") || this.getOwnerComponent().getModel();
+                        var oModel = this.getView().getModel("products") || this.getOwnerComponent().getModel("products");
                         var aProducts = oModel.getProperty("/products");
-                        
+
                         aProducts.splice(iIndex, 1);
                         oModel.setProperty("/products", aProducts);
 
@@ -239,13 +232,13 @@ sap.ui.define([
             }
 
             var oUpdatedProduct = this._oEditDialogModel.getProperty("/product");
-            oUpdatedProduct.Price = parseFloat(oUpdatedProduct.Price || oUpdatedProduct.price);
-            oUpdatedProduct.StockQuantity = parseInt(oUpdatedProduct.StockQuantity || oUpdatedProduct.stock, 10);
-            oUpdatedProduct.ReorderThreshold = parseInt(oUpdatedProduct.ReorderThreshold || oUpdatedProduct.reorderThreshold, 10) || 0;
-            oUpdatedProduct.LastUpdated = new Date().toISOString().split("T")[0];
+            oUpdatedProduct.price = parseFloat(oUpdatedProduct.price || oUpdatedProduct.Price);
+            oUpdatedProduct.stock = parseInt(oUpdatedProduct.stock || oUpdatedProduct.StockQuantity, 10);
+            oUpdatedProduct.reorderThreshold = parseInt(oUpdatedProduct.reorderThreshold || oUpdatedProduct.ReorderThreshold, 10) || 0;
+            oUpdatedProduct.lastUpdated = new Date().toISOString().split("T")[0];
 
-            var oContext = this.getView().getBindingContext() || this.getView().getBindingContext("products");
-            var oProductsModel = this.getModel("products") || this.getOwnerComponent().getModel();
+            var oContext = this.getView().getBindingContext("products") || this.getView().getBindingContext();
+            var oProductsModel = this.getView().getModel("products") || this.getOwnerComponent().getModel("products");
 
             oProductsModel.setProperty(oContext.getPath(), oUpdatedProduct);
 
@@ -262,10 +255,17 @@ sap.ui.define([
                 actions: [MessageBox.Action.YES, MessageBox.Action.NO],
                 onClose: function (oAction) {
                     if (oAction === MessageBox.Action.YES) {
-                        this._resetValidationStates();
-                        this._pEditDialog.then(function (oDialog) {
-                            oDialog.close();
-                        });
+                        if (typeof this._resetValidationStates === "function") {
+                            this._resetValidationStates();
+                        }
+
+                        if (this._pEditDialog) {
+                            this._pEditDialog.then(function (oDialog) {
+                                if (oDialog && oDialog.isOpen()) {
+                                    oDialog.close();
+                                }
+                            });
+                        }
                     }
                 }.bind(this)
             });
@@ -282,7 +282,6 @@ sap.ui.define([
         },
 
         onCloseDetailPress: function () {
-            // Close mid column and go back to master
             var oUIModel = this.getOwnerComponent().getModel("ui");
             if (oUIModel) {
                 oUIModel.setProperty("/layout", "OneColumn");

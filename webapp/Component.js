@@ -12,13 +12,13 @@ sap.ui.define([
         },
 
         init: function () {
-            // Call the base UIComponent's init method FIRST
+            // Call the base component's init function
             UIComponent.prototype.init.apply(this, arguments);
 
-            // Set the device model
+            // Set device model
             this.setModel(models.createDeviceModel(), "device");
 
-            // Safe check to initialize router
+            // Initialize router
             if (this.getRouter()) {
                 this.getRouter().initialize();
             }

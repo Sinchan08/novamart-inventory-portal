@@ -6,8 +6,10 @@
     displayBlock="true"
     height="100%">
 
-    <f:FlexibleColumnLayout
-        id="fcl"
-        layout="OneColumn" />
+    <App id="app">
+        <f:FlexibleColumnLayout
+            id="fcl"
+            layout="OneColumn" />
+    </App>
 
 </mvc:View>

@@ -16,6 +16,55 @@ sap.ui.define([
         formatter: formatter,
 
         onInit: function () {
+            var oView = this.getView();
+        var oModel = this.getOwnerComponent().getModel("products");
+
+        if (oModel) {
+            var aProducts = oModel.getProperty("/products");
+            if (!aProducts || aProducts.length === 0) {
+                oView.setBusy(true);
+
+                oModel.attachEventOnce("requestCompleted", function () {
+                    oView.setBusy(false);
+                });
+                oModel.attachEventOnce("requestFailed", function () {
+                    oView.setBusy(false);
+                });
+            }
+        }
+            this._setupCategories();
+        },
+        _setupCategories: function () {
+            var oModel = this.getOwnerComponent().getModel("products");
+            if (!oModel) {
+                return;
+            }
+
+            var fnExtract = function () {
+                var aProducts = oModel.getProperty("/products") || [];
+                var aCategories = [];
+
+                aProducts.forEach(function (oProd) {
+                    if (oProd.category && !aCategories.some(function (c) { return c.key === oProd.category; })) {
+                        aCategories.push({
+                            key: oProd.category,
+                            text: oProd.category
+                        });
+                    }
+                });
+
+                oModel.setProperty("/categories", aCategories);
+            };
+
+            var aProducts = oModel.getProperty("/products");
+            if (aProducts && aProducts.length > 0) {
+                fnExtract();
+            } else {
+                oModel.attachRequestCompleted(function fnHandler() {
+                    oModel.detachRequestCompleted(fnHandler, this);
+                    fnExtract();
+                }, this);
+            }
         },
 
         onSearch: function (oEvent) {
@@ -45,8 +94,6 @@ sap.ui.define([
             }
 
             var sProductId = oContext.getProperty("productId");
-
-            // Optional: Update layout model if you use a layout model for FlexibleColumnLayout
             var oUIModel = this.getOwnerComponent().getModel("ui");
             if (oUIModel) {
                 oUIModel.setProperty("/layout", "TwoColumnsMidExpanded");
@@ -271,30 +318,53 @@ sap.ui.define([
             var oTable = this.byId("productList");
             var oBinding = oTable.getBinding("items");
             var mParams = oEvent.getParameters();
-
             var aSorters = [];
             if (mParams.groupItem) {
-                var sGroupPath = mParams.groupItem.getKey();
-                var bGroupDescending = mParams.groupDescending;
-                aSorters.push(new Sorter(sGroupPath, bGroupDescending, true));
+                aSorters.push(new Sorter(mParams.groupItem.getKey(), mParams.groupDescending, true));
             }
-
             if (mParams.sortItem) {
-                var sSortPath = mParams.sortItem.getKey();
-                var bSortDescending = mParams.sortDescending;
-                aSorters.push(new Sorter(sSortPath, bSortDescending));
+                aSorters.push(new Sorter(mParams.sortItem.getKey(), mParams.sortDescending));
             }
             oBinding.sort(aSorters);
+            var aCategoryFilters = [];
+            var aStockFilters = [];
 
-            var aFilters = [];
-            if (mParams.filterItems) {
+            if (mParams.filterItems && mParams.filterItems.length > 0) {
                 mParams.filterItems.forEach(function (oItem) {
-                    var sFilterPath = oItem.getParent().getKey();
-                    var sValue = oItem.getKey();
-                    aFilters.push(new Filter(sFilterPath, FilterOperator.EQ, sValue));
+                    var sKey = oItem.getKey();
+                    var sParentKey = oItem.getParent().getKey();
+
+                    if (sParentKey === "category") {
+                        aCategoryFilters.push(new Filter("category", FilterOperator.EQ, sKey));
+                    } else if (sParentKey === "stock") {
+                        if (sKey === "In Stock") {
+                            aStockFilters.push(new Filter("stock", FilterOperator.GE, 10));
+                        } else if (sKey === "Low Stock") {
+                            aStockFilters.push(new Filter("stock", FilterOperator.BT, 1, 9));
+                        } else if (sKey === "OutOfStock" || sKey === "Out of Stock") {
+                            aStockFilters.push(new Filter("stock", FilterOperator.EQ, 0));
+                        }
+                    }
                 });
             }
-            oBinding.filter(aFilters);
+            var aFinalFilters = [];
+
+            if (aCategoryFilters.length > 0) {
+                aFinalFilters.push(new Filter({ filters: aCategoryFilters, and: false }));
+            }
+            if (aStockFilters.length > 0) {
+                aFinalFilters.push(new Filter({ filters: aStockFilters, and: false }));
+            }
+
+            oBinding.filter(aFinalFilters);
+        },
+        onListUpdateFinished: function (oEvent) {
+            var iTotalItems = oEvent.getParameter("total");
+            var oTitle = this.byId("txtListTitle");
+
+            if (oTitle) {
+                oTitle.setText("Products (" + iTotalItems + ")");
+            }
         }
 
     });

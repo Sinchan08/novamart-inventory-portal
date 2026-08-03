@@ -6,7 +6,7 @@
 
     <Page
         id="listPage"
-        title="NovaMart Distributors | Inventory Portal"
+        title="{i18n>appTitle}"
         showNavButton="false">
         
         <content>
@@ -18,12 +18,13 @@
                 noDataText="{i18n>noDataText}"
                 mode="SingleSelectMaster"
                 selectionChange=".onProductSelect"
+                updateFinished=".onListUpdateFinished"
                 growing="true"
                 growingThreshold="15">
                 
                 <headerToolbar>
                     <OverflowToolbar id="tbListHeader">
-                        <Title id="txtListTitle" text="Products ({products>/products/length})" level="H2"/>
+                        <Title id="txtListTitle" text="{i18n>listTitle}" level="H2"/>
                         <ToolbarSpacer id="spcHeader"/>
                         <SearchField
                             id="searchField"
@@ -33,29 +34,29 @@
                         <Button
                             id="btnViewSettings"
                             icon="sap-icon://filter"
-                            tooltip="Sort / Filter / Group"
+                            tooltip="{i18n>btnViewSettingsTooltip}"
                             press=".onOpenViewSettings"/>
                         <Button
                             id="btnAddProduct"
                             icon="sap-icon://add"
                             type="Emphasized"
-                            text="Add Product"
+                            text="{i18n>btnAdd}"
                             press=".onAddProduct"/>
                     </OverflowToolbar>
                 </headerToolbar>
 
                 <columns>
                     <Column id="colProduct">
-                        <Text id="lblColProduct" text="Product Name" />
+                        <Text id="lblColProduct" text="{i18n>colProductName}" />
                     </Column>
                     <Column id="colCategory" minScreenWidth="Tablet" demandPopin="true">
-                        <Text id="lblColCategory" text="Category" />
+                        <Text id="lblColCategory" text="{i18n>colCategory}" />
                     </Column>
                     <Column id="colPrice" hAlign="End">
-                        <Text id="lblColPrice" text="Price" />
+                        <Text id="lblColPrice" text="{i18n>colPrice}" />
                     </Column>
                     <Column id="colStatus" hAlign="End">
-                        <Text id="lblColStatus" text="Stock Status" />
+                        <Text id="lblColStatus" text="{i18n>colStockStatus}" />
                     </Column>
                 </columns>
 

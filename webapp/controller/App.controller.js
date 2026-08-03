@@ -19,7 +19,6 @@ sap.ui.define([
                 return;
             }
 
-            // Expand to 2 columns when viewing details; collapse to 1 when on master list
             if (sRouteName === "detail") {
                 oFCL.setLayout(fioriLibrary.LayoutType.TwoColumnsMidExpanded);
             } else if (sRouteName === "master") {

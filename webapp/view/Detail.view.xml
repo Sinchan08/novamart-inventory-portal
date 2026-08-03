@@ -22,7 +22,6 @@
                         id="btnCloseDetail"
                         icon="sap-icon://decline"
                         type="Transparent"
-                        tooltip="Close detail view"
                         press=".onCloseDetailPress" />
                 </f:navigationActions>
             </f:DynamicPageTitle>
@@ -38,20 +37,20 @@
                     intro="SKU: {products>sku}">
                     <statuses>
                         <ObjectStatus
-    id="detailStockStatus"
-    text="{
-        path: 'products>stock',
-        formatter: '.formatter.formatStockStatusText'
-    }"
-    state="{
-        path: 'products>stock',
-        formatter: '.formatter.formatStockStatusState'
-    }" />
+                            id="detailStockStatus"
+                            text="{
+                                path: 'products>stock',
+                                formatter: '.formatter.formatStockStatusText'
+                            }"
+                            state="{
+                                path: 'products>stock',
+                                formatter: '.formatter.formatStockStatusState'
+                            }" />
                     </statuses>
                     <attributes>
-                        <ObjectAttribute id="attrCategory" text="Category: {products>category}" />
-                        <ObjectAttribute id="attrWarehouse" text="Warehouse: {products>warehouse}" />
-                        <ObjectAttribute id="attrSupplier" text="Supplier: {products>supplier}" />
+                        <ObjectAttribute id="attrCategory" text="{i18n>colCategory}: {products>category}" />
+                        <ObjectAttribute id="attrWarehouse" text="{i18n>lblWarehouse}: {products>warehouse}" />
+                        <ObjectAttribute id="attrSupplier" text="{i18n>lblSupplier}: {products>supplier}" />
                     </attributes>
                 </ObjectHeader>
             </f:DynamicPageHeader>
@@ -60,21 +59,21 @@
         <!-- Main Content Area -->
         <f:content>
             <VBox id="detailContentVBox" class="sapUiSmallMargin">
-                <Panel id="detailSpecsPanel" headerText="Product Specifications &amp; Inventory Level">
+                <Panel id="detailSpecsPanel" headerText="{i18n>detailSectionTitle}">
                     <form:SimpleForm
                         id="detailSpecsForm"
                         editable="false"
                         layout="ColumnLayout">
-                        <Label id="lblDescription" text="Description:" />
+                        <Label id="lblDescription" text="{i18n>lblDescription}" />
                         <Text id="txtDescription" text="{products>description}" />
 
-                        <Label id="lblStockQuantity" text="Current Stock Level:" />
-                        <Text id="txtStockQuantity" text="{products>stock} units" />
+                        <Label id="lblStockQuantity" text="{i18n>lblCurrentStock}" />
+                        <Text id="txtStockQuantity" text="{products>stock}" />
 
-                        <Label id="lblReorderThreshold" text="Reorder Threshold:" />
-                        <Text id="txtReorderThreshold" text="{products>reorderThreshold} units" />
+                        <Label id="lblReorderThreshold" text="{i18n>lblReorderThreshold}" />
+                        <Text id="txtReorderThreshold" text="{products>reorderThreshold}" />
 
-                        <Label id="lblLastUpdated" text="Last Updated:" />
+                        <Label id="lblLastUpdated" text="{i18n>lblLastUpdated}" />
                         <Text id="txtLastUpdated" text="{products>lastUpdated}" />
                     </form:SimpleForm>
                 </Panel>
@@ -86,20 +85,20 @@
             <OverflowToolbar id="detailFooterToolbar">
                 <Button
                     id="btnReorderStock"
-                    text="Reorder Stock"
+                    text="{i18n>btnReorder}"
                     icon="sap-icon://cart-plus"
                     type="Emphasized"
                     press=".onReorderPress" />
                 <ToolbarSpacer id="detailFooterSpacer" />
                 <Button
                     id="btnEditProduct"
-                    text="Edit"
+                    text="{i18n>btnEdit}"
                     icon="sap-icon://edit"
                     type="Transparent"
                     press=".onEditPress" />
                 <Button
                     id="btnDeleteProduct"
-                    text="Delete"
+                    text="{i18n>btnDelete}"
                     icon="sap-icon://delete"
                     type="Reject"
                     press=".onDeletePress" />

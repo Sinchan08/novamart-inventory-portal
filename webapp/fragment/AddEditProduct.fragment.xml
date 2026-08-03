@@ -4,35 +4,35 @@
     xmlns:f="sap.ui.layout.form">
     <Dialog
         id="dlgAddEditProduct"
-        title="{dialog>/title}">
+        title="{= ${dialog>/isEdit} ? ${i18n>dialogEditTitle} : ${i18n>dialogAddTitle} }">
         <content>
             <f:SimpleForm
                 id="sfAddEdit"
                 editable="true"
                 layout="ColumnLayout">
                 <f:content>
-                    <Label id="lblEditName" text="Product Name" required="true"/>
+                    <Label id="lblEditName" text="{i18n>lblProductName}" required="true"/>
                     <Input
                         id="inpEditName"
                         value="{dialog>/product/name}"
                         valueLiveUpdate="true"
                         liveChange=".onInputChange"/>
 
-                    <Label id="lblEditCategory" text="Category" required="true"/>
+                    <Label id="lblEditCategory" text="{i18n>lblCategory}" required="true"/>
                     <Input
                         id="inpEditCategory"
                         value="{dialog>/product/category}"
                         valueLiveUpdate="true"
                         liveChange=".onInputChange"/>
 
-                    <Label id="lblEditSKU" text="SKU" required="true"/>
+                    <Label id="lblEditSKU" text="{i18n>lblSKU}" required="true"/>
                     <Input
                         id="inpEditSKU"
                         value="{dialog>/product/sku}"
                         valueLiveUpdate="true"
                         liveChange=".onInputChange"/>
 
-                    <Label id="lblEditPrice" text="Price ($)" required="true"/>
+                    <Label id="lblEditPrice" text="{i18n>lblPrice}" required="true"/>
                     <Input
                         id="inpEditPrice"
                         type="Number"
@@ -40,7 +40,7 @@
                         valueLiveUpdate="true"
                         liveChange=".onInputChange"/>
 
-                    <Label id="lblEditStock" text="Stock Quantity" required="true"/>
+                    <Label id="lblEditStock" text="{i18n>lblStock}" required="true"/>
                     <Input
                         id="inpEditStock"
                         type="Number"
@@ -48,23 +48,23 @@
                         valueLiveUpdate="true"
                         liveChange=".onInputChange"/>
 
-                    <Label id="lblEditThreshold" text="Reorder Threshold"/>
+                    <Label id="lblEditThreshold" text="{i18n>lblReorderThreshold}"/>
                     <Input
                         id="inpEditThreshold"
                         type="Number"
                         value="{dialog>/product/reorderThreshold}"/>
 
-                    <Label id="lblEditSupplier" text="Supplier"/>
+                    <Label id="lblEditSupplier" text="{i18n>lblSupplier}"/>
                     <Input
                         id="inpEditSupplier"
                         value="{dialog>/product/supplier}"/>
 
-                    <Label id="lblEditWarehouse" text="Warehouse Location"/>
+                    <Label id="lblEditWarehouse" text="{i18n>lblWarehouseLocation}"/>
                     <Input
                         id="inpEditWarehouse"
                         value="{dialog>/product/warehouse}"/>
 
-                    <Label id="lblEditDescription" text="Description"/>
+                    <Label id="lblEditDescription" text="{i18n>lblDescription}"/>
                     <TextArea
                         id="taEditDescription"
                         rows="3"
@@ -75,14 +75,14 @@
         <beginButton>
             <Button
                 id="btnSaveProduct"
-                text="Save"
+                text="{i18n>btnSave}"
                 type="Emphasized"
                 press=".onSaveProductDialog"/>
         </beginButton>
         <endButton>
             <Button
                 id="btnCancelProduct"
-                text="Cancel"
+                text="{i18n>btnCancel}"
                 press=".onCancelProductDialog"/>
         </endButton>
     </Dialog>

@@ -83,8 +83,14 @@
         "viewType": "XML",
         "async": true,
         "viewPath": "novamart.inventory.inventoryportal.view",
-        "controlId": "fcl",
-        "transition": "slide"
+        "controlId": "app",
+        "controlAggregation": "pages",
+        "transition": "slide",
+        "bypassed": {
+          "target": [
+            "notFound"
+          ]
+        }
       },
       "routes": [
         {
@@ -104,28 +110,30 @@
         },
         {
           "name": "notFound",
-          "pattern": ":all*:",
+          "pattern": "notFound",
           "target": [
-            "master",
             "notFound"
           ]
         }
       ],
       "targets": {
         "master": {
+          "controlId": "fcl",
           "viewName": "List",
           "viewLevel": 1,
           "controlAggregation": "beginColumnPages"
         },
         "detail": {
+          "controlId": "fcl",
           "viewName": "Detail",
           "viewLevel": 2,
           "controlAggregation": "midColumnPages"
         },
         "notFound": {
+          "controlId": "app",
           "viewName": "NotFound",
           "viewLevel": 3,
-          "controlAggregation": "midColumnPages"
+          "controlAggregation": "pages"
         }
       }
     }

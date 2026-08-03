@@ -16,12 +16,29 @@
         </groupItems>
 
         <filterItems>
-            <ViewSettingsFilterItem id="vsfiCategory" text="Category" key="category">
+            <ViewSettingsFilterItem
+                id="vsfiCategory"
+                text="Category"
+                key="category"
+                items="{
+                    path: 'products>/categories',
+                    templateShareable: false
+                }">
                 <items>
-                    <ViewSettingsItem id="vsiCatHardware" text="Hardware" key="Hardware"/>
-                    <ViewSettingsItem id="vsiCatMachinery" text="Machinery" key="Machinery"/>
-                    <ViewSettingsItem id="vsiCatElectronics" text="Electronics" key="Electronics"/>
-                    <ViewSettingsItem id="vsiCatSafety" text="Safety Gear" key="Safety Gear"/>
+                    <ViewSettingsItem
+                        id="vsiCategoryItem"
+                        text="{products>text}"
+                        key="{products>key}" />
+                </items>
+            </ViewSettingsFilterItem>
+            <ViewSettingsFilterItem
+                id="vsfiStockStatus"
+                text="Stock Status"
+                key="stock">
+                <items>
+                    <ViewSettingsItem id="vsiInStock" text="In Stock" key="In Stock"/>
+                    <ViewSettingsItem id="vsiLowStock" text="Low Stock" key="Low Stock"/>
+                    <ViewSettingsItem id="vsiOutOfStock" text="Out of Stock" key="Out of Stock"/>
                 </items>
             </ViewSettingsFilterItem>
         </filterItems>
